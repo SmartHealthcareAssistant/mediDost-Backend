@@ -54,6 +54,10 @@ router.post("/send-otp", otpLimiter, async (req, res) => {
 
     console.log("📩 Sending OTP email...");
 
+    // DEBUG
+console.log("SMTP USER:", process.env.SMTP_USER);
+console.log("SMTP PASS:", process.env.SMTP_PASS?.slice(0, 10));
+
     // ✅ Send Email (FIXED BLOCK)
     try {
       await transporter.sendMail({
