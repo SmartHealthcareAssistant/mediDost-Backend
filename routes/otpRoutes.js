@@ -55,23 +55,29 @@ router.post("/send-otp", otpLimiter, async (req, res) => {
     console.log("📩 Sending OTP email...");
 
     // DEBUG
-console.log("SMTP USER:", process.env.SMTP_USER);
-console.log("SMTP PASS:", process.env.SMTP_PASS?.slice(0, 10));
+// console.log("SMTP USER:", process.env.SMTP_USER);
+// console.log("SMTP PASS:", process.env.SMTP_PASS?.slice(0, 10));
 
     // ✅ Send Email (FIXED BLOCK)
     try {
-      await transporter.sendMail({
-        from: `"MediDost" <${process.env.SMTP_USER}>`,
-        to: email,
-        subject: "Your OTP Code",
-        html: `
-          <h2>Email Verification</h2>
-          <p>Your OTP is:</p>
-          <h1>${otp}</h1>
-          <p>This OTP will expire in ${otpExpire / 60} minutes</p>
-        `,
-      });
+await sendEmail({
+  to: email,
+  subject: "Your OTP Code",
 
+  htmlContent: `
+    <div style="font-family: Arial, sans-serif; line-height:1.5;">
+      <h2>MediDost OTP Verification</h2>
+
+      <p>Your OTP is:</p>
+
+      <h1>${otp}</h1>
+
+      <p>
+        This OTP will expire in ${otpExpire / 60} minutes.
+      </p>
+    </div>
+  `,
+});
       console.log("✅ Email sent successfully");
     } catch (err) {
       console.error("❌ EMAIL ERROR FULL:", err);
