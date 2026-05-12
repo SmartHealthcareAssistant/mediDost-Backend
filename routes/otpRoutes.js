@@ -4,7 +4,8 @@ import crypto from "crypto";
 import rateLimit from "express-rate-limit";
 
 import redisClient from "../config/redis.js";
-import transporter from "../config/mailer.js";
+// import transporter from "../config/mailer.js";
+import sendMail from "../config/mailer.js";
 
 const router = express.Router();
 
@@ -60,17 +61,24 @@ console.log("SMTP PASS:", process.env.SMTP_PASS?.slice(0, 10));
 
     // ✅ Send Email (FIXED BLOCK)
     try {
-      await transporter.sendMail({
-        from: `"MediDost" <${process.env.SMTP_USER}>`,
-        to: email,
-        subject: "Your OTP Code",
-        html: `
-          <h2>Email Verification</h2>
-          <p>Your OTP is:</p>
-          <h1>${otp}</h1>
-          <p>This OTP will expire in ${otpExpire / 60} minutes</p>
-        `,
-      });
+await sendMail({
+  to: email,
+  subject: "OTP Verification",
+
+  html: `
+    <div style="font-family: Arial, sans-serif;">
+      <h2>MediDost OTP Verification</h2>
+
+      <p>Your OTP is:</p>
+
+      <h1>${otp}</h1>
+
+      <p>
+        OTP expires in ${otpExpire / 60} minutes.
+      </p>
+    </div>
+  `,
+});
 
       console.log("✅ Email sent successfully");
     } catch (err) {
@@ -184,16 +192,24 @@ router.post("/resend-otp", async (req, res) => {
 
     // ✅ Send Email safely
     try {
-      await transporter.sendMail({
-        from: `"MediDost" <${process.env.SMTP_USER}>`,
-        to: email,
-        subject: "Resend OTP Code",
-        html: `
-          <h2>Email Verification</h2>
-          <h1>${otp}</h1>
-          <p>Expires in ${otpExpire / 60} minutes.</p>
-        `,
-      });
+await sendMail({
+  to: email,
+  subject: "OTP Verification",
+
+  html: `
+    <div style="font-family: Arial, sans-serif;">
+      <h2>MediDost OTP Verification</h2>
+
+      <p>Your OTP is:</p>
+
+      <h1>${otp}</h1>
+
+      <p>
+        OTP expires in ${otpExpire / 60} minutes.
+      </p>
+    </div>
+  `,
+});
     } catch (err) {
       console.error("❌ RESEND EMAIL ERROR:", err);
       console.log("⚠️ OTP fallback:", otp);
