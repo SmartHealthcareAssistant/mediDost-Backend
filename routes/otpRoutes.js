@@ -4,7 +4,7 @@ import crypto from "crypto";
 import rateLimit from "express-rate-limit";
 
 import redisClient from "../config/redis.js";
-import senMail from "../config/mailer.js";
+import sendMail from "../config/mailer.js";
 
 const router = express.Router();
 
@@ -190,8 +190,7 @@ router.post("/resend-otp", async (req, res) => {
 
     // ✅ Send Email safely
     try {
-      await transporter.sendMail({
-        from: `"MediDost" <${process.env.SMTP_USER}>`,
+      await sendMail({
         to: email,
         subject: "Resend OTP Code",
         html: `
