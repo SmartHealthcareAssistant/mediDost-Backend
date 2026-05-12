@@ -4,7 +4,7 @@ import crypto from "crypto";
 import rateLimit from "express-rate-limit";
 
 import redisClient from "../config/redis.js";
-import transporter from "../config/mailer.js";
+import senMail from "../config/mailer.js";
 
 const router = express.Router();
 
@@ -60,7 +60,7 @@ router.post("/send-otp", otpLimiter, async (req, res) => {
 
     // ✅ Send Email (FIXED BLOCK)
     try {
-await sendEmail({
+await sendMail({
   to: email,
   subject: "Your OTP Code",
 
